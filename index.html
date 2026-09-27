@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GHS Books - Your Online Library</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.1em;
+      opacity: 0.9;
+    }
+
+    nav {
+      background-color: #333;
+      padding: 10px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #667eea;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .search-bar {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      max-width: 500px;
+      padding: 12px 20px;
+      font-size: 1em;
+      border: 2px solid #667eea;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    .search-bar input:focus {
+      border-color: #764ba2;
+    }
+
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .book-card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+
+    .book-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .book-cover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 3em;
+    }
+
+    .book-info {
+      padding: 20px;
+    }
+
+    .book-info h3 {
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    .book-info p {
+      color: #666;
+      font-size: 0.9em;
+      margin-bottom: 10px;
+    }
+
+    .book-rating {
+      color: #f39c12;
+      margin-bottom: 10px;
+    }
+
+    .book-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: background 0.3s;
+      width: 100%;
+    }
+
+    .book-btn:hover {
+      background: #764ba2;
+    }
+
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+
+    .category-filter {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .category-btn {
+      background: white;
+      border: 2px solid #667eea;
+      color: #667eea;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .category-btn.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .category-btn:hover {
+      background: #667eea;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📚 GHS Books</h1>
+    <p>Discover Your Next Great Read</p>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#books">Books</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search books by title or author...">
+    </div>
+
+    <div class="category-filter">
+      <button class="category-btn active" onclick="filterBooks('all')">All</button>
+      <button class="category-btn" onclick="filterBooks('fiction')">Fiction</button>
+      <button class="category-btn" onclick="filterBooks('mystery')">Mystery</button>
+      <button class="category-btn" onclick="filterBooks('science')">Science</button>
+      <button class="category-btn" onclick="filterBooks('self-help')">Self-Help</button>
+    </div>
+
+    <div class="books-grid" id="booksGrid">
+      <!-- Books will be dynamically loaded here -->
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 GHS Books. All rights reserved. | Made with ❤️</p>
+  </footer>
+
+  <script>
+    const books = [
+      {
+        id: 1,
+        title: "The Great Gatsby",
+        author: "F. Scott Fitzgerald",
+        category: "fiction",
+        rating: 4.5,
+        icon: "📖"
+      },
+      {
+        id: 2,
+        title: "Murder on the Orient Express",
+        author: "Agatha Christie",
+        category: "mystery",
+        rating: 4.7,
+        icon: "🔍"
+      },
+      {
+        id: 3,
+        title: "A Brief History of Time",
+        author: "Stephen Hawking",
+        category: "science",
+        rating: 4.3,
+        icon: "🔬"
+      },
+      {
+        id: 4,
+        title: "Atomic Habits",
+        author: "James Clear",
+        category: "self-help",
+        rating: 4.8,
+        icon: "💡"
+      },
+      {
+        id: 5,
+        title: "To Kill a Mockingbird",
+        author: "Harper Lee",
+        category: "fiction",
+        rating: 4.9,
+        icon: "📚"
+      },
+      {
+        id: 6,
+        title: "The Girl with the Dragon Tattoo",
+        author: "Stieg Larsson",
+        category: "mystery",
+        rating: 4.4,
+        icon: "🕵️"
+      },
+      {
+        id: 7,
+        title: "Sapiens",
+        author: "Yuval Noah Harari",
+        category: "science",
+        rating: 4.6,
+        icon: "🌍"
+      },
+      {
+        id: 8,
+        title: "The 7 Habits of Highly Effective People",
+        author: "Stephen Covey",
+        category: "self-help",
+        rating: 4.5,
+        icon: "✨"
+      }
+    ];
+
+    let currentCategory = 'all';
+
+    function displayBooks(booksToDisplay) {
+      const grid = document.getElementById('booksGrid');
+      grid.innerHTML = '';
+
+      booksToDisplay.forEach(book => {
+        const card = document.createElement('div');
+        card.className = 'book-card';
+        card.innerHTML = `
+          <div class="book-cover">${book.icon}</div>
+          <div class="book-info">
+            <h3>${book.title}</h3>
+            <p><strong>Author:</strong> ${book.author}</p>
+            <div class="book-rating">★ ${book.rating}/5</div>
+            <button class="book-btn">View Details</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function filterBooks(category) {
+      currentCategory = category;
+      updateCategoryButtons();
+      
+      const filtered = category === 'all' 
+        ? books 
+        : books.filter(book => book.category === category);
+      
+      displayBooks(filtered);
+    }
+
+    function updateCategoryButtons() {
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+    }
+
+    document.getElementById('searchInput').addEventListener('keyup', function(e) {
+      const searchTerm = e.target.value.toLowerCase();
+      
+      const filtered = books.filter(book => 
+        book.title.toLowerCase().includes(searchTerm) ||
+        book.author.toLowerCase().includes(searchTerm)
+      );
+      
+      displayBooks(filtered);
+    });
+
+    // Initial display
+    displayBooks(books);
+  </script>
+</body>
+</html>
