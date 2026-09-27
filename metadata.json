@@ -1,0 +1,6 @@
+{
+  "name": "Free Code AI",
+  "description": "AI-powered web coding workspace with chat, live editor & preview, project generator, and ZIP export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
